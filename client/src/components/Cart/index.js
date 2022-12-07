@@ -1,15 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import CartItem from '../CartItem';
 import { useStoreContext } from '../../utils/GlobalState';
-import { TOGGLE_CART } from '../../utils/actions';
+import { TOGGLE_CART, ADD_MULTIPLE_TO_CART } from '../../utils/actions';
+import { idbPromise } from "../../utils/helpers";
 import Auth from '../../utils/auth';
 import './style.css';
-import { startOfDay } from 'date-fns';
+// import { startOfDay } from 'date-fns';
+
 
 const Cart = () => {
   // in this case dispatch() will call the TOGGLE_CART
   const [state, dispatch] = useStoreContext();
   console.log(state)
+
+  useEffect(() => {
+    async function getCart() {
+      const cart = await idbPromise('cart', 'get');
+      dispatch({ type: ADD_MULTIPLE_TO_CART, products: [...cart] });
+    };
+
+    if (!state.cart.length) {
+      getCart();
+    }
+  }, [state.cart.length, dispatch]);
 
   function toggleCart() {
     dispatch({ type: TOGGLE_CART });
@@ -33,6 +46,9 @@ const Cart = () => {
       </div>
     )
   }
+
+
+ 
 
 
   return (
