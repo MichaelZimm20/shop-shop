@@ -8,6 +8,8 @@ const { Provider } = StoreContext; // provider is a special type of REACT compon
 const StoreProvider = ({ value = [], ...props }) => {
     const [state, dispatch] = useProductReducer({
         products: [],
+        cart: [],
+        cartOpen: false,
         categories: [],
         currentCategory: '',
     });
